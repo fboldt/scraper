@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/fboldt/scraper#readme",
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "puppeteer": "^18.0.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
