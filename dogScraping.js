@@ -12,7 +12,7 @@ const fsp = require('fs/promises')
 async function start() {
 
     // Abre o navegador e uma nova aba.
-    const browser = await puppeteer.launch({headless:false})
+    const browser = await puppeteer.launch({ headless: false })
     const page = await browser.newPage()
 
     // É redirecionado para a página que queremos.
@@ -28,25 +28,32 @@ async function start() {
         return Array.from(document.querySelectorAll(".div-col ul li > a")).map(x => x.title)
     });
 
-// Cria pastas para cada uma das raças de cachorros.
-    for(const nome of nomes){
-        const path = "./"+nome;
+    // Cria pastas para cada uma das raças de cachorros.
+    const datasetdir = 'dogbreed'
+    criaDiretorio(datasetdir)
+    for (const nome of nomes) {
+        const path = `./${datasetdir}/${nome}`
+        criaDiretorio(path)
+    }
+    function criaDiretorio(path) {
         fs.access(path, fs.constants.F_OK, (err) => { // Tenta acessar a pasta para verificar se ela existe.
-            if(err){ // Caso de erro executa as linhas a seguir
+            if (err) { // Caso de erro executa as linhas a seguir
                 fs.mkdir(path, (error) => { // Cria uma pasta com o nome da raça de cachorro.
                     if (error) {
                         console.log(error);
                     } else {
-                        console.log("New Directory created successfully !!");   
-                    }});
-                    return;
-                }else{
-                    return;
-                }}); 
+                        console.log("New Directory created successfully !!");
+                    }
+                });
+                return;
+            } else {
+                return;
             }
+        });
+    }
 
     //Acessa cada página da lista de links e baixa as imagens.
-    let i=0;
+    let i = 0;
     for (const link of linksDogs) {
         await page.goto(link)
 
@@ -58,7 +65,7 @@ async function start() {
         // Abre o endereço de cada imagem e salva na pasta criada com o nome da respectiva raça.
         for (const img of imgsDogs) {
             const imagepage = await page.goto(img)
-            await fsp.writeFile('./'+nomes[i]+'/' + img.split("/").pop(), await imagepage.buffer())
+            await fsp.writeFile('./' + datasetdir + '/' + nomes[i] + '/' + img.split("/").pop(), await imagepage.buffer())
         }
         i++;
     }
