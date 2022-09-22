@@ -1,6 +1,6 @@
 // ------- IC NERA 2022 - IFES SERRA -----------
 //         Web Scrapping com Node JS 
-//               Versão: 1.0
+//               Versão: 1.1
 
 
 // Require das APIs e Módulos utilizados no programa.
