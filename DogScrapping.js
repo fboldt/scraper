@@ -8,6 +8,46 @@ const puppeteer = require('puppeteer')
 const fs = require('fs')
 const fsp = require('fs/promises')
 
+// Cria pastas para cada uma das raças de cachorros.
+async function criarPastas(nomes){
+    for(const nome of nomes){
+        const path = "./"+nome;
+        fs.access(path, fs.constants.F_OK, (err) => { // Tenta acessar a pasta para verificar se ela existe.
+            if(err){ // Caso de erro executa as linhas a seguir
+                fs.mkdir(path, (error) => { // Cria uma pasta com o nome da raça de cachorro.
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log("New Directory created successfully !!");   
+                    }});
+                    return;
+                }else{
+                    return;
+                }}); 
+            }
+}
+
+//Acessa cada página da lista de links e baixa as imagens.
+async function baixarImagens(){
+        let i=0;
+    for (const link of linksDogs) {
+        await page.goto(link)
+
+        //Selecionando todos os links de imagens dentro de cada raça de cachorro.
+        const imgsDogs = await page.evaluate(() => {
+            return Array.from(document.querySelectorAll("img")).map(x => x.src)
+        });
+
+        // Abre o endereço de cada imagem e salva na pasta criada com o nome da respectiva raça.
+        for (const img of imgsDogs) {
+            const imagepage = await page.goto(img)
+            await fsp.writeFile('./'+nomes[i]+'/' + img.split("/").pop(), await imagepage.buffer())
+        }
+        i++;
+    }
+
+}
+
 //  Inicio da função.
 async function start() {
 
@@ -28,41 +68,8 @@ async function start() {
         return Array.from(document.querySelectorAll(".div-col ul li > a")).map(x => x.title)
     });
 
-// Cria pastas para cada uma das raças de cachorros.
-    for(const nome of nomes){
-        const path = "./"+nome;
-        fs.access(path, fs.constants.F_OK, (err) => { // Tenta acessar a pasta para verificar se ela existe.
-            if(err){ // Caso de erro executa as linhas a seguir
-                fs.mkdir(path, (error) => { // Cria uma pasta com o nome da raça de cachorro.
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log("New Directory created successfully !!");   
-                    }});
-                    return;
-                }else{
-                    return;
-                }}); 
-            }
-
-    //Acessa cada página da lista de links e baixa as imagens.
-    let i=0;
-    for (const link of linksDogs) {
-        await page.goto(link)
-
-        //Selecionando todos os links de imagens dentro de cada raça de cachorro.
-        const imgsDogs = await page.evaluate(() => {
-            return Array.from(document.querySelectorAll("img")).map(x => x.src)
-        });
-
-        // Abre o endereço de cada imagem e salva na pasta criada com o nome da respectiva raça.
-        for (const img of imgsDogs) {
-            const imagepage = await page.goto(img)
-            await fsp.writeFile('./'+nomes[i]+'/' + img.split("/").pop(), await imagepage.buffer())
-        }
-        i++;
-    }
-
+    criarPastas();
+    baixarImagens();
     // Fecha o navegador.
     await browser.close()
 }
