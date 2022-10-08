@@ -1,4 +1,4 @@
-# Dastabase Scraper
+# Database Scraper
 
 [on heroku](https://dbscraper.herokuapp.com/)
 
