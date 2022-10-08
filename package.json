@@ -4,7 +4,7 @@
   "description": "Scrap dog images from wikipedia.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nodemon app.js",
     "start": "node app.js"
   },
   "repository": {
@@ -21,6 +21,6 @@
     "express": "^4.18.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.20"
   }
 }
