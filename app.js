@@ -12,7 +12,7 @@ app.get("/", (req, res) =>{
 });
 
 app.post("/", urlencondedParser, (req, res) =>{
-    res.end(typeof req.query.url)
+    res.end("dataset scraper")
     //res.end(geraJson(req.query.url))
 });
 
