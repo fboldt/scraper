@@ -9,7 +9,7 @@ import os
 
 def pegarDados():
 
-  link = "http://127.0.0.1:5000/"
+  link = "http://127.0.0.1:3000/"
 
   requisicao = requests.get(link)
   os.mkdir('./racas')
