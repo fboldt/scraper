@@ -16,10 +16,13 @@
         <br>
 
 
-        <form action="http://127.0.0.1:8081/" method="POST">
+        <form action="" method="POST">
             <!-- Trocar para a url do heroku quando estiver pronto-->
-            link: <input type="text" name="url">
-            <input type="submit" value="Enviar">
+            link: <input type="text" name="url" value="https://en.wikipedia.org/wiki/List_of_dog_breeds">
+            <input type="submit" value="Enviar"><br>
+            quantidade: 
+            <input type="range" min="1" max="50" value="2" oninput="rangeValue.innerText = this.value" name="quantidade">
+            <span id="rangeValue">2</span>
         </form>
     </center>
 </body>

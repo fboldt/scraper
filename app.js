@@ -6,17 +6,19 @@ app = express();
 app.use(express.urlencoded({ extended: false }))
 
 app.get("/", (req, res) => {
-    res.sendfile(__dirname + "/index.html");
+    res.sendFile(__dirname + "/index.html");
 });
 
 app.post("/", async (req, res) => {
     console.time('scraping')
-    res.end(await geraJson(req.body.url))
+    const url = req.body.url
+    const quantidade = req.body.quantidade
+    res.end(await geraJson(url, quantidade))
     console.timeEnd('scraping')
 });
 
 
-async function geraJson(url) {
+async function geraJson(url, quantidade) {
     retorno = []
     const browser = await pupper.launch({ headless: true });
     const page = await browser.newPage();
@@ -33,7 +35,7 @@ async function geraJson(url) {
     })
 
     //acessa todos os links e seleciona as imagens de cada página
-    for (var m = 0; m < 50; m++) {
+    for (var m = 0; m < quantidade; m++) {
         const json_aux = {}
         await page.goto(links[m]);
         page.waitForNavigation()
@@ -60,5 +62,15 @@ async function geraJson(url) {
     return JSON.stringify(retorno)
 };
 
+const port = process.env.PORT || 3000
 
-app.listen(8081);
+const start = async () => {
+    try {
+        app.listen(port, () =>
+            console.log(`Server is listening on port ${port}...`)
+        );
+    } catch (error) {
+        console.log(error);
+    }
+};
+start()
