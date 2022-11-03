@@ -2,6 +2,9 @@
   "name": "scraper",
   "version": "1.0.0",
   "description": "Scrap dog images from wikipedia.",
+  "engines": {
+    "node": "18.12.0"
+  },
   "main": "app.js",
   "scripts": {
     "test": "nodemon app.js",
