@@ -20,7 +20,12 @@ app.post("/", async (req, res) => {
 
 async function geraJson(url, quantidade) {
     retorno = []
-    const browser = await pupper.launch({ headless: true });
+    const browser = await puppeteer.launch({
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+        ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url);
@@ -58,7 +63,7 @@ async function geraJson(url, quantidade) {
         json_aux[nomes[m]] = imagens;
         retorno.push(json_aux)
     }
-    
+
     return JSON.stringify(retorno)
 };
 
