@@ -1,12 +1,31 @@
-<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dataset Scraping</title>
+
+    <title>Wiki Scraper</title>
+
+    <style>
+        body {
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Dataset Scraping</h1>
+    <h1>
+        Images Scraper
+    </h1>
+    <form action="" method="POST">
+        <!-- Trocar para a url do heroku quando estiver pronto-->
+        link: <input type="text" name="url" value="https://en.wikipedia.org/wiki/List_of_dog_breeds" size="40">
+        <input type="submit" value="Enviar"><br>
+        quantidade:
+        <input type="range" min="1" max="50" value="2" oninput="rangeValue.innerText = this.value" name="quantidade">
+        <span id="rangeValue">2</span>
+    </form>
 </body>
+
 </html>
