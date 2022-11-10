@@ -30,7 +30,7 @@ async function selecionaImagensPaginas(page, quantidade) {
         console.log(nomes[m])
         retorno.push(json_aux)
     }
-    return retorno
+    return JSON.parse(JSON.stringify(retorno))
 }
 
 async function listaLinks(page) {
