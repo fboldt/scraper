@@ -26,6 +26,15 @@ async function selecionaImagensPaginas(page, quantidade) {
         await page.goto(links[m]);
         page.waitForNavigation()
         const imagens = await avaliaPagina(page)
+        tituloPag = await page.evaluate(async () => {
+            return document.querySelector('#firstHeading > span').textContent;
+        });
+        console.log(tituloPag + " pop")
+        while(tituloPag !== nomes[m]){
+            json_aux[nomes[m]] = [];
+            retorno.push(json_aux)
+            m++
+        }
         json_aux[nomes[m]] = imagens;
         console.log(nomes[m])
         retorno.push(json_aux)
