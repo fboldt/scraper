@@ -1,15 +1,21 @@
-from flask import Flask, jsonify
+
 
 import json
 import requests
 
 import os
+import sys
+
+sys.stdin.reconfigure(encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 ########################################
 
 def baixarImgs(dados):
+    lstError = {}
     for item in dados:
         for raca, links in item.items():
+            lst = []
             
             dir = './racas/'+ raca
             
@@ -19,19 +25,25 @@ def baixarImgs(dados):
                 for link in links:
                     nomeArq = dir+"/" + link.split("/").pop()
                     r = requests.get(link, stream=True)
-                    with open(nomeArq, 'wb') as f:
-                        f.write(r.content)
-                    
+                    try:
+                        with open(nomeArq, 'wb') as f:
+                            f.write(r.content)
+                    except:
+                        lst.append(nomeArq)
             else: 
                 for link in links:
                     nomeArq = dir+"/" + link.split("/").pop()
                     if not(os.path.isfile(nomeArq)):
                         r = requests.get(link, stream=True)
-                        with open(nomeArq, 'wb') as f:
-                            f.write(r.content)
+                        try:
+                            with open(nomeArq, 'wb') as f:
+                                f.write(r.content)
+                        except:
+                            lst.append(nomeArq)
+                            
+            lstError[raca] = lst            
                         
-                        
-            print(f"Raca: {raca}\nImagens: {links}\nTotal de Imagens: {len(links)}\n")
+            print(f"Raca: {raca} \nImagens: {links}\nTotal de Imagens: {len(links)}\n")
 
 
 def main():
@@ -42,9 +54,10 @@ def main():
   if not(os.path.isdir('racas')):
     os.mkdir('./racas')
 
-  print(dados)
-  baixarImgs(dados)
-    
+  racasSemLink = dados.pop(0)
+  imgsNBaixadas = baixarImgs(dados)
+  
+  print(racasSemLink)
   print(f'Total de racas: {len(dados)}')
   meu_json.close()
 
