@@ -40,10 +40,13 @@ def baixarImgs(dados):
                                 f.write(r.content)
                         except:
                             lst.append(nomeArq)
-                            
-            lstError[raca] = lst            
+            
+            if (len(lst)!=0):
+                lstError[raca] = lst             
                         
-            print(f"Raca: {raca} \nImagens: {links}\nTotal de Imagens: {len(links)}\n")
+            print(f"Raca: {raca} \nImagens: {links}\nTotal de Imagens: {len(links)}\nImgs n baixadas: {lst}\n")
+    
+    return lstError
 
 
 def main():
@@ -59,6 +62,7 @@ def main():
   
   print(racasSemLink)
   print(f'Total de racas: {len(dados)}')
+  print(f'Não baixadas: {imgsNBaixadas}')
   meu_json.close()
 
 
