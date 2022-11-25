@@ -8,6 +8,7 @@ async function geraJson(url, quantidade) {
     const page = await browser.newPage();
     await page.goto(url);
     const retorno = await selecionaImagensPaginas(page, quantidade)
+    await delay(4000);
     browser.close()
     await fs.writeFile("public/lista.json", JSON.stringify(retorno))
     const link = "<a href='lista.json'>download</a>"
@@ -24,7 +25,6 @@ async function selecionaImagensPaginas(page, quantidade) {
     const nomes = await listaNomes(page)
     
 
-    if (quantidade == 0) quantidade = nomes.length
     //acessa todos os links e seleciona as imagens de cada página
     for (let m = 0; m < quantidade; m++) {
         const json_aux = {}
@@ -34,6 +34,11 @@ async function selecionaImagensPaginas(page, quantidade) {
         console.log(nomes[m])
         json_aux[nomes[m]] = imagens;
         retorno.push(json_aux)
+
+        if(await verificaPag(page)){
+            console.log("Pag no padrao")
+        }
+
     }
     return JSON.parse(JSON.stringify(retorno))
 }
@@ -50,6 +55,17 @@ async function listaNomes(page) {
     })
 }
 
+
+async function verificaPag(page) {
+    return page.evaluate(() => {
+        list = Array.from(document.querySelectorAll("#mw-content-text > div.mw-parser-output > table.infobox.biota")).map(n => n.outerHTML)
+        if(list.length != 0){
+            return true
+        }
+        return false
+    })
+}
+
 async function nomeSemLink(page){
     return page.evaluate(() => {
         const lista = Array.from(document.querySelectorAll(".div-col ul li")).map(n => n.firstChild.data)
@@ -62,6 +78,12 @@ async function nomeSemLink(page){
         return newList
     })
 }
+
+function delay(time) {
+    return new Promise(function(resolve) { 
+        setTimeout(resolve, time)
+    });
+ }
 
 async function avaliaPagina(page) {
     return page.evaluate(() => {
