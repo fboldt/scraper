@@ -4,6 +4,7 @@ const fs = require("fs/promises");
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 async function geraJson(url, quantidade) {
+    console.log('scraping')
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
