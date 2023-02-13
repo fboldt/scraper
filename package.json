@@ -1,5 +1,5 @@
 {
-  "name": "scraper",
+  "name": "crawler",
   "version": "1.0.0",
   "description": "Scrap dog images from wikipedia.",
   "engines": {
@@ -22,7 +22,9 @@
   "homepage": "https://github.com/fboldt/scraper#readme",
   "dependencies": {
     "express": "^4.18.1",
-    "puppeteer": "^19.2.1"
+    "puppeteer": "^19.2.1",
+    "robots-txt-parser": "^2.0.3",
+    "tqdm": "^2.0.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
