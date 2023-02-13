@@ -12,12 +12,12 @@ async function checkIfAllowed(url) {
    return robots.canCrawl(url);
 }
 
-async function crawl() {
+export async function crawl(linkUsuario) {
 
   const browser = await puppeteer.launch({waitUntil: 'domcontentloaded'});
   const page = await browser.newPage();
   await page.setUserAgent(DEFAULT_USER_AGENT);
-  await page.goto('https://www.atlantbh.com/blog/');
+  await page.goto(linkUsuario);
   console.log('Fetching links...');
   const urls = await fetchUrls(page);
   console.log("Done.")
@@ -30,13 +30,13 @@ async function crawl() {
         const somePage = await browser.newPage();
         await somePage.setUserAgent(DEFAULT_USER_AGENT);
         await somePage.goto(url);
-        const img_links = await fetchImgs(somePage);
       }
 }
 
   await browser.close();
 
 }
+
 
 async function fetchUrls(page) {
   return await page.$$eval('a', as => as.map(a => a.href));
@@ -46,4 +46,6 @@ async function fetchImgs(link) {
   return await link.$$eval('img', imgs => imgs.map(img => img.src));
 }
 
-crawl();
+
+
+// crawl();

@@ -1,15 +1,14 @@
-const express = require("express");
-const { geraJson } = require("./scraper");
+import express, {urlencoded } from "express";
+import { crawl } from "./ImgCrawler.js";
 
-app = express();
+const app = express();
 app.use(express.static('./public'))
-app.use(express.urlencoded({ extended: false }))
+app.use(urlencoded({ extended: false }))
 
-app.get("/", async (req, res) => {
+app.post("/", async (req, res) => {
     console.time('scraping')
     const url = 'https://en.wikipedia.org/wiki/List_of_dog_breeds'
-    const quantidade = 5
-    res.end(await geraJson(url, quantidade))
+    res.end(await crawl(url))
     console.timeEnd('scraping')
 
 });
@@ -25,4 +24,6 @@ const start = async () => {
         console.log(error);
     }
 };
+
+
 start()
