@@ -7,8 +7,9 @@ app.use(urlencoded({ extended: false }))
 
 app.post("/", async (req, res) => {
     console.time('scraping')
-    const url = 'https://en.wikipedia.org/wiki/List_of_dog_breeds'
-    res.end(await crawl(url))
+    const quant = req.body.quantidade
+    const url = req.body.url
+    res.end(await crawl(url, quant))
     console.timeEnd('scraping')
 
 });

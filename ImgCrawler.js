@@ -1,6 +1,8 @@
 import puppeteer from 'puppeteer';
 import tqdm from 'tqdm';
 import robotsParser from 'robots-txt-parser';
+import fs from "fs/promises";
+
 
 const DEFAULT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36";
 
@@ -12,7 +14,7 @@ async function checkIfAllowed(url) {
    return robots.canCrawl(url);
 }
 
-export async function crawl(linkUsuario) {
+export async function crawl(linkUsuario, quant) {
 
   const browser = await puppeteer.launch({waitUntil: 'domcontentloaded'});
   const page = await browser.newPage();
@@ -23,17 +25,23 @@ export async function crawl(linkUsuario) {
   console.log("Done.")
 
   /*Cheking if the link it's allowed to be crowded.*/
-  
-  console.log("Fetching images: ")
-  for (let url of tqdm(urls)) {
-    if (await checkIfAllowed(url)) {
+console.log("Fetching images: ")
+var imgs = [];
+  for (var i=0; i<quant; i++) {
+    if (await checkIfAllowed(urls[i])) {
         const somePage = await browser.newPage();
         await somePage.setUserAgent(DEFAULT_USER_AGENT);
-        await somePage.goto(url);
+        await somePage.goto(urls[i]);
+        imgs = await fetchImgs(somePage);
       }
 }
-
+  
+  
   await browser.close();
+
+  await fs.writeFile("public/lista.json", JSON.stringify(imgs));
+  const link = "<a href='lista.json'>download</a>";
+  return link;
 
 }
 
