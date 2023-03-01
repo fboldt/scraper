@@ -3,7 +3,7 @@ import robotsParser from 'robots-txt-parser';
 import fs from "fs/promises";
 
 const DEFAULT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36";
-const DEFAULT_HOST = "https://www.lucasfelpi.com.br/";
+const DEFAULT_HOST = "https://en.wikipedia.org/wiki/List_of_dog_breeds";
 
 async function checkIfAllowed(url) {
    const robots = robotsParser({ userAgent: DEFAULT_USER_AGENT});
@@ -11,7 +11,7 @@ async function checkIfAllowed(url) {
    return robots.canCrawl(url);
 }
 
-export async function crawl(home_link, quant, depth) {
+export async function crawl(home_link) {
   
   const browser = await puppeteer.launch({waitUntil: 'domcontentloaded'});
   const page = await browser.newPage();
@@ -28,14 +28,20 @@ export async function crawl(home_link, quant, depth) {
       
     // }
 
-    fs.writeFile('imgs.txt', imgs, (err) => {
-      if(err)
-        throw err; 
-      console.log("Images has been written.");
-      });
+    // for (let i = 0; i < links.length; i++) {
+    //   if (links[i] != "")
+    //     console.log(links[i])
+    // }
+
+    // fs.writeFile('imgs.txt', links, (err) => {
+    //   if(err)
+    //     throw err; 
+    //   console.log("Images has been written.");
+    //   });
     
     // for (let i = 0; i < imgs.length; i++) {
     // }
+
   }
 
   /*Cheking if the link it's allowed to be crowded.*/
@@ -52,9 +58,9 @@ export async function crawl(home_link, quant, depth) {
   
   await browser.close();
 
-  // await fs.writeFile("public/lista.json", JSON.stringify(imgs));
-  // const link = "<a href='lista.json'>download</a>";
-  // return link;
+  await fs.writeFile("public/lista.json", JSON.stringify(imgs, null, ", "));
+  const link = "<a href='lista.json'>download</a>";
+  return link;
 
 }
 
@@ -66,4 +72,4 @@ async function fetchImgs(link) {
   return await link.$$eval('img', imgs => imgs.map(img => img.src));
 }
 
-crawl(DEFAULT_HOST, 0, 0);
+crawl(DEFAULT_HOST);
