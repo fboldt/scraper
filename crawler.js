@@ -18,9 +18,10 @@ export async function crawl(home_link) {
   await page.setUserAgent(DEFAULT_USER_AGENT);
   await page.goto(home_link);
 
+  let imgs
   if (await checkIfAllowed(home_link)) {
     console.log("Fetching images and links from home page...")
-    const imgs = await fetchImgs(page);
+    imgs = await fetchImgs(page);
     const links = await fetchUrls(page);
     console.log("Done.")
 

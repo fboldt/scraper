@@ -1,5 +1,5 @@
 import express, {urlencoded } from "express";
-import { crawl, crawl_parallelized } from "./ImgCrawler.js";
+import { crawl } from "./crawler.js";
 
 const app = express();
 app.use(express.static('./public'))
