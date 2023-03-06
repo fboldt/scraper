@@ -19,6 +19,7 @@ export async function crawl(home_link) {
   await page.setUserAgent(DEFAULT_USER_AGENT);
   await page.goto(home_link);
 
+
   if (await checkIfAllowed(home_link)) {
 
     console.log("Fetching images and links from home page...");
@@ -27,6 +28,7 @@ export async function crawl(home_link) {
     galery = galery.concat(imgs);
 
     const links = await fetchUrls(page);
+    
     console.log("Done.");
 
     for (let link in links) {
@@ -57,12 +59,12 @@ async function fetchImgs(link) {
   return await link.$$eval('img', imgs => imgs.map(img => img.src));
 }
 
-function removeEmptyLinks(list) {
-  for (let i = 0; i < list.length; i++) {
-    if (list[i] == "")
-      list.splice(i, i+1);
+function removeBlankLinks(list) {
+  for (let elem in list) {
+    if (list[elem] == "")
+      list.splice(elem, elem + 1);
   }
-  return list
+  return list;
 }
 
 crawl(DEFAULT_HOST);
