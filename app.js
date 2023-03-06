@@ -6,12 +6,12 @@ app.use(express.static('./public'))
 app.use(urlencoded({ extended: false }))
 
 app.post("/", async (req, res) => {
-    console.time('scraping')
+    console.time('crawl')
     const quant = req.body.quantidade
     const url = req.body.url
-    res.end(await crawl(url, quant))
-    console.timeEnd('scraping')
-
+    const link_list = await crawl(url, quant)
+    res.end(`<a href="${link_list}">lista de links</a>`)
+    console.timeEnd('crawl')
 });
 
 const port = process.env.PORT || 3000
