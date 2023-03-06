@@ -11,6 +11,7 @@ async function checkIfAllowed(url) {
    return robots.canCrawl(url);
 }
 
+let galery = [];
 export async function crawl(home_link) {
   
   const browser = await puppeteer.launch({waitUntil: 'domcontentloaded'});
@@ -19,46 +20,30 @@ export async function crawl(home_link) {
   await page.goto(home_link);
 
   if (await checkIfAllowed(home_link)) {
-    console.log("Fetching images and links from home page...")
+
+    console.log("Fetching images and links from home page...");
     const imgs = await fetchImgs(page);
+
+    galery = galery.concat(imgs);
+
     const links = await fetchUrls(page);
-    console.log("Done.")
+    console.log("Done.");
 
-    // while (depth > 0) {
-      
-    // }
-
-    // for (let i = 0; i < links.length; i++) {
-    //   if (links[i] != "")
-    //     console.log(links[i])
-    // }
-
-    // fs.writeFile('imgs.txt', links, (err) => {
-    //   if(err)
-    //     throw err; 
-    //   console.log("Images has been written.");
-    //   });
-    
-    // for (let i = 0; i < imgs.length; i++) {
-    // }
+    for (let link in links) {
+      const browser = await puppeteer.launch({waitUntil: 'domcontentloaded'});
+      if (await checkIfAllowed(link)) {
+        const page = await browser.newPage();
+        await page.setUserAgent(DEFAULT_USER_AGENT);
+        await page.goto(link);
+        galery = galery.concat(await fetchImgs(page));
+      }
+    }
 
   }
-
-  /*Cheking if the link it's allowed to be crowded.*/
-  // console.log("Fetching images: ")
-  // var imgs = [];
-  // for (var i=0; i<quant; i++) {
-  //   if (await checkIfAllowed(urls[i])) {
-  //       const somePage = await browser.newPage();
-  //       await somePage.setUserAgent(DEFAULT_USER_AGENT);
-  //       await somePage.goto(urls[i]);
-  //       imgs = await fetchImgs(somePage);
-  //     }
-  // }
   
   await browser.close();
 
-  await fs.writeFile("public/lista.json", JSON.stringify(imgs, null, ", "));
+  await fs.writeFile("public/lista.json", JSON.stringify(galery));
   const link = "<a href='lista.json'>download</a>";
   return link;
 
@@ -70,6 +55,14 @@ async function fetchUrls(page) {
 
 async function fetchImgs(link) {
   return await link.$$eval('img', imgs => imgs.map(img => img.src));
+}
+
+function removeEmptyLinks(list) {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i] == "")
+      list.splice(i, i+1);
+  }
+  return list
 }
 
 crawl(DEFAULT_HOST);
