@@ -11,6 +11,7 @@ async function checkIfAllowed(url) {
    return robots.canCrawl(url);
 }
 
+let galery = [];
 export async function crawl(home_link) {
   
   const browser = await puppeteer.launch({waitUntil: 'domcontentloaded'});
@@ -18,30 +19,21 @@ export async function crawl(home_link) {
   await page.setUserAgent(DEFAULT_USER_AGENT);
   await page.goto(home_link);
 
-  let imgs
+
   if (await checkIfAllowed(home_link)) {
     console.log("Fetching images and links from home page...")
-    imgs = await fetchImgs(page);
+    const imgs = await fetchImgs(page);
+
+    galery = galery.concat(imgs);
+
     const links = await fetchUrls(page);
-    console.log("Done.")
-
-    // while (depth > 0) {
-      
-    // }
-
-    // for (let i = 0; i < links.length; i++) {
-    //   if (links[i] != "")
-    //     console.log(links[i])
-    // }
-
-    // fs.writeFile('imgs.txt', links, (err) => {
-    //   if(err)
-    //     throw err; 
-    //   console.log("Images has been written.");
-    //   });
     
-    // for (let i = 0; i < imgs.length; i++) {
-    // }
+    removeBlankLinks(links)
+
+    for (let link in links) {
+      /*gerar instânica de página a partir do link*/
+      /*acessar e recuperar imagens.*/
+    }
 
   }
 
@@ -59,7 +51,7 @@ export async function crawl(home_link) {
   
   await browser.close();
 
-  await fs.writeFile("public/lista.json", JSON.stringify(imgs, null, ", "));
+  await fs.writeFile("public/lista.json", JSON.stringify(galery));
   const link = "<a href='lista.json'>download</a>";
   return link;
 
@@ -71,6 +63,14 @@ async function fetchUrls(page) {
 
 async function fetchImgs(link) {
   return await link.$$eval('img', imgs => imgs.map(img => img.src));
+}
+
+function removeBlankLinks(list) {
+  for (let elem in list) {
+    if (list[elem] == "")
+      list.splice(elem, elem + 1);
+  }
+  return list;
 }
 
 crawl(DEFAULT_HOST);
