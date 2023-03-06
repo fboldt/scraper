@@ -38,7 +38,7 @@ async function crawl(home_link = DEFAULT_HOST, nPages = 0) {
   }
 
   await browser.close();
-  await fs.writeFile(`public/${link_list}`, galery);
+  await fs.writeFile(`public/${link_list}`, galery.toString());
   return link_list;
 }
 
