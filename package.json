@@ -1,5 +1,5 @@
 {
-  "name": "crawler",
+  "name": "scraper",
   "version": "1.0.0",
   "description": "Scrap dog images from wikipedia.",
   "engines": {

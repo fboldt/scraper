@@ -1,35 +1,33 @@
 
-const puppeteer = require("puppeteer");
-const fs = require("fs/promises");
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+import puppeteer from 'puppeteer';
+import fs from "fs/promises";
 
-async function geraJson(url, quantidade) {
-    console.log('scraping')
+export async function geraJson(url, quantidade) {
+    console.log('scraping');
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
     const retorno = await selecionaImagensPaginas(page, quantidade)
     await delay(4000);
-    browser.close()
-    await fs.writeFile("public/lista.json", JSON.stringify(retorno))
-    const link = "<a href='lista.json'>download</a>"
-    return link
+    browser.close();
+    await fs.writeFile("public/lista.json", JSON.stringify(retorno));
+    const link = "<a href='lista.json'>download</a>";
+    return link;
 };
 
 async function selecionaImagensPaginas(page, quantidade) {
     const retorno = []
-    var json_aux = {}
-    json_aux["Racas Sem Links"]= await nomeSemLink(page)
-    retorno.push(json_aux)
+    // json_aux["Racas Sem Links"]= await nomeSemLink(page)
+    // retorno.push(json_aux)
 
     const links = await listaLinks(page)
-    const nomes = await listaNomes(page)
+    const nomes = []
     
-
     //acessa todos os links e seleciona as imagens de cada página
     for (let m = 0; m < quantidade; m++) {
         const json_aux = {}
         await page.goto(links[m]);
+        nomes.push= await listaNomes(page)
         page.waitForNavigation()
         const imagens = await avaliaPagina(page)
         console.log(nomes[m])
@@ -44,15 +42,29 @@ async function selecionaImagensPaginas(page, quantidade) {
     return JSON.parse(JSON.stringify(retorno))
 }
 
+// async function listaLinks(page) {
+//     return page.evaluate(() => {
+//         return Array.from(document.querySelectorAll(".div-col ul li > a")).map(n => n.href)
+//     })
+// }
+
+
 async function listaLinks(page) {
     return page.evaluate(() => {
-        return Array.from(document.querySelectorAll(".div-col ul li > a")).map(n => n.href)
+        return Array.from(document.querySelectorAll("a")).map(n => n.href)
     })
 }
 
+// async function listaNomes(page) {
+//     return page.evaluate(() => {
+//         return list = Array.from(document.querySelectorAll(".div-col ul li > a")).map(n => n.title)
+//     })
+// }
+
+
 async function listaNomes(page) {
     return page.evaluate(() => {
-        return list = Array.from(document.querySelectorAll(".div-col ul li > a")).map(n => n.title)
+        return document.querySelector("span").textContent
     })
 }
 
@@ -67,18 +79,6 @@ async function verificaPag(page) {
     })
 }
 
-async function nomeSemLink(page){
-    return page.evaluate(() => {
-        const lista = Array.from(document.querySelectorAll(".div-col ul li")).map(n => n.firstChild.data)
-        const newList = Array.from(document.querySelectorAll(".div-col ul li > span")).map(n => n.id)
-        for (item of lista){
-            if (item != null){
-                newList.push(item)
-            }
-        }      
-        return newList
-    })
-}
 
 function delay(time) {
     return new Promise(function(resolve) { 
@@ -99,6 +99,3 @@ async function avaliaPagina(page) {
     });
 }
 
-module.exports = {
-    geraJson,
-}
