@@ -1,7 +1,12 @@
-let data = ["Marcos", "Vinicius", "Mendes", "Faria", "Marcelo"]
+import { readFileSync, writeFileSync } from 'fs';
 
-console.log(data)
+// Lendo um arquivo JSON
+const data = readFileSync('dados.json');
+const json = JSON.parse(data);
 
-data.splice(1, 2);
+// Manipulando os dados do arquivo
+json.novoCampo = 'novo valor';
+json.novaLista = [1, 2, 3];
 
-console.log(data)
+// Gravando o arquivo JSON modificado
+writeFileSync('dados-modificados.json', JSON.stringify(json));
