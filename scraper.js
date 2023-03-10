@@ -4,7 +4,7 @@ import fs from "fs/promises";
 
 export async function geraJson(url, quantidade) {
     console.log('scraping');
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.goto(url);
     const retorno = await selecionaImagensPaginas(page, quantidade)
@@ -19,23 +19,26 @@ async function selecionaImagensPaginas(page, quantidade) {
     const retorno = []
     // json_aux["Racas Sem Links"]= await nomeSemLink(page)
     // retorno.push(json_aux)
-
+    
     const links = await listaLinks(page)
     const nomes = []
-    
+    if (quantidade==0){quantidade=links.length;}
     //acessa todos os links e seleciona as imagens de cada página
     for (let m = 0; m < quantidade; m++) {
         const json_aux = {}
         await page.goto(links[m]);
-        nomes.push= await listaNomes(page)
-        page.waitForNavigation()
-        const imagens = await avaliaPagina(page)
-        console.log(nomes[m])
-        json_aux[nomes[m]] = imagens;
-        retorno.push(json_aux)
 
         if(await verificaPag(page)){
             console.log("Pag no padrao")
+            nomes.push= await listaNomes(page)
+            page.waitForNavigation()
+            const imagens = await avaliaPagina(page)
+            console.log(nomes[m])
+            json_aux[nomes[m]] = imagens;
+            retorno.push(json_aux)
+        }
+        else{
+            console.log("Pag fora do padrao")
         }
 
     }
@@ -51,7 +54,7 @@ async function selecionaImagensPaginas(page, quantidade) {
 
 async function listaLinks(page) {
     return page.evaluate(() => {
-        return Array.from(document.querySelectorAll("a")).map(n => n.href)
+        return Array.from(document.querySelectorAll("main a")).map(n => n.href)
     })
 }
 
@@ -64,7 +67,7 @@ async function listaLinks(page) {
 
 async function listaNomes(page) {
     return page.evaluate(() => {
-        return document.querySelector("span").textContent
+        return document.querySelector("h1 > span").textContent
     })
 }
 
