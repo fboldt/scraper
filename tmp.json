@@ -1,0 +1,37 @@
+[
+	{ 
+	  "url": "principal.com",
+	  "figlinks": [ 
+	  		{
+			  	"figurl": "fig1.jpg",
+			  	"figalt": "logotipo",
+	  		}, 
+	  		{
+		  		"figurl": "fig2.jpg"
+	  		}
+	  	      ]
+	},
+	{ 
+	  "url": "link1.com",
+	  "textContent": "Clube dos cães", " 
+	  "figlinks": [ 
+	  		{ 
+	  			"figurl": "fig3.jpg",
+	  			"figlink": "bigfig3.html",
+	  			"listfigs": [ "bigfig3a.jpg", "bigfig3b.jpg" ]
+	  		}, 
+	  		{
+	  			"figurl": "fig4.jpg" 
+	  		},
+		  	      ] 
+	},
+	{ 
+	  "url": "link2.com",
+	  "textContent": "pastor alemão",
+	  "figlinks": [ 
+	  		{ "url": "fig5.jpg" }, 
+	  		{ "url": "fig5.jpg" }
+	  	      ] 
+	}
+]
+
