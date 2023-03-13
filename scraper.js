@@ -21,7 +21,8 @@ async function selecionaImagensPaginas(page, quantidade) {
     // retorno.push(json_aux)
     
     const links = await listaLinks(page)
-    const nomes = []
+    var nomes = []
+    let cl= 0; // cl = contlista
     if (quantidade==0){quantidade=links.length;}
     //acessa todos os links e seleciona as imagens de cada página
     for (let m = 0; m < quantidade; m++) {
@@ -30,12 +31,14 @@ async function selecionaImagensPaginas(page, quantidade) {
 
         if(await verificaPag(page)){
             console.log("Pag no padrao")
-            nomes.push= await listaNomes(page)
+            let nome= await listaNomes(page)
+            nomes.push(nome)
             page.waitForNavigation()
             const imagens = await avaliaPagina(page)
-            console.log(nomes[m])
-            json_aux[nomes[m]] = imagens;
+            console.log(nomes[cl])
+            json_aux[nomes[cl]] = imagens;
             retorno.push(json_aux)
+            cl+=1;
         }
         else{
             console.log("Pag fora do padrao")
@@ -53,9 +56,14 @@ async function selecionaImagensPaginas(page, quantidade) {
 
 
 async function listaLinks(page) {
-    return page.evaluate(() => {
-        return Array.from(document.querySelectorAll("main a")).map(n => n.href)
-    })
+    // return page.evaluate(() => {
+    //     const links = Array.from(document.querySelectorAll("main a")).map(n => n.href);
+    //     return links.filter(link => !link.closest('header') && link.matches('a[href]')).map(link => link.href);
+    // })
+    return await page.$$eval('main a', (links) => {
+        return links.filter(link => !link.closest('header') && link.matches('a[href]'))
+          .map(link => link.href);
+      });
 }
 
 // async function listaNomes(page) {
@@ -66,9 +74,10 @@ async function listaLinks(page) {
 
 
 async function listaNomes(page) {
+    
     return page.evaluate(() => {
-        return document.querySelector("h1 > span").textContent
-    })
+        return document.querySelector("h1 > span").textContent; 
+    });
 }
 
 
