@@ -7,9 +7,9 @@ app.use(urlencoded({ extended: false }))
 
 app.post("/", async (req, res) => {
     console.time('crawl')
-    const quant = req.body.quantidade
+    // const quant = req.body.quantidade
     const url = req.body.url
-    const link_list = await crawl(url, quant)
+    const link_list = await crawl(url)
     res.end(`<a href="${link_list}">lista de links</a>`)
     console.timeEnd('crawl')
 });

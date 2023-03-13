@@ -18,7 +18,8 @@ async function checkIfAllowed(url) {
   return robots.canCrawl(url);
 }
 
-async function crawl(home_link = DEFAULT_HOST, nPages = 0) {
+//Foi removido o limitador de links por enquanto.
+async function crawl(home_link = DEFAULT_HOST) {
 
   const browser = await puppeteer.launch({ waitUntil: 'domcontentloaded' });
   const page = await browser.newPage();
@@ -33,11 +34,13 @@ async function crawl(home_link = DEFAULT_HOST, nPages = 0) {
     const links = await fetchUrls(page);
 
     let link;
-    for (let i = 0; i < links.length, nPages-- > 0; i++) {
+    for (let i = 0; i < links.length; i++) {
       link = links[i];
+      
       if (await checkIfAllowed(link)) {
-        await page.goto(link);
+        await page.goto(link, {timeout: 0});
         galery = galery.concat(await fetchImgs(page));
+        console.log(i + "/" + links.length);
       }
     }
 
