@@ -75,20 +75,34 @@ async function listaLinks(page) {
 
 async function listaNomes(page) {
     
-    return page.evaluate(() => {
-        return document.querySelector("h1 > span").textContent; 
+    const title = page.evaluate(() => {
+        return document.querySelector("h1").textContent; 
     });
+
+    if((title.toString()).includes("span")){
+        title = page.evaluate(() => {
+            return document.querySelector("h1 > span").textContent; 
+        });
+    }
+
+    return title;
 }
 
 
 async function verificaPag(page) {
     return page.evaluate(() => {
+        try{
         list = Array.from(document.querySelectorAll("#mw-content-text > div.mw-parser-output > table.infobox.biota")).map(n => n.outerHTML)
         if(list.length != 0){
             return true
         }
         return false
-    })
+        }
+    catch(e){
+        return false
+    }
+    });   
+
 }
 
 
