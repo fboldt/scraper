@@ -3,6 +3,7 @@ import robotsParser from 'robots-txt-parser';
 // import fs from "fs/promises";
 // const fs = require('fs');
 import { readFileSync, writeFileSync } from 'fs';
+import clear from 'clear';
 
 const DEFAULT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36";
 const DEFAULT_HOST = "https://en.wikipedia.org/wiki/List_of_dog_breeds";
@@ -36,11 +37,16 @@ async function crawl(home_link = DEFAULT_HOST) {
     let link;
     for (let i = 0; i < links.length; i++) {
       link = links[i];
-      
-      if (await checkIfAllowed(link)) {
-        await page.goto(link, {timeout: 0});
-        galery = galery.concat(await fetchImgs(page));
-        console.log(i + "/" + links.length);
+      try {
+        if (await checkIfAllowed(link)) {
+          await page.goto(link, {timeout: 0});
+          galery = galery.concat(await fetchImgs(page));
+          console.log(i + "/" + links.length);
+          //clear();
+        }
+      } catch(error) {
+        console.log('Ocorreu um erro:', error)
+        console.log('O link que está gerando o erro:', link)
       }
     }
 
