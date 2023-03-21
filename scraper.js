@@ -23,28 +23,30 @@ async function selecionaImagensPaginas(page, quantidade) {
     const links = await listaLinks(page)
     var nomes = []
     let cl= 0; // cl = contlista
+
     if (quantidade==0){quantidade=links.length;}
+    console.log(cl+'/'+quantidade);
     //acessa todos os links e seleciona as imagens de cada página
     for (let m = 0; m < quantidade; m++) {
         const json_aux = {}
+        try{
         await page.goto(links[m]);
 
         if(await verificaPag(page)){
-            console.log("Pag no padrao")
             let nome= await listaNomes(page)
             nomes.push(nome)
             page.waitForNavigation()
             const imagens = await avaliaPagina(page)
-            console.log(nomes[cl])
             json_aux[nomes[cl]] = imagens;
             retorno.push(json_aux)
             cl+=1;
         }
-        else{
-            console.log("Pag fora do padrao")
+        }catch(e){
+            continue;
         }
-
+        console.log(m+'/'+quantidade);
     }
+    
     return JSON.parse(JSON.stringify(retorno))
 }
 
@@ -91,18 +93,12 @@ async function listaNomes(page) {
 
 async function verificaPag(page) {
     return page.evaluate(() => {
-        try{
         list = Array.from(document.querySelectorAll("#mw-content-text > div.mw-parser-output > table.infobox.biota")).map(n => n.outerHTML)
         if(list.length != 0){
             return true
         }
         return false
-        }
-    catch(e){
-        return false
-    }
-    });   
-
+        });
 }
 
 
