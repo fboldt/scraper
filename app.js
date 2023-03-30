@@ -1,5 +1,5 @@
 import express, {urlencoded } from "express";
-import { geraJson } from "./scraper.js";
+import { geraJson } from "./scraperText.js";
 
 const app = express();
 app.use(express.static('./public'))
