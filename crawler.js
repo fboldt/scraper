@@ -47,7 +47,7 @@ async function crawl(home_link = DEFAULT_HOST, quant) {
   
   await browser.close();
 
-  writeFileSync(`public/${'list.json'}`, JSON.stringify(objectsList));
+  writeFileSync(`public/${'list.json'}`, JSON.stringify(objectsList, null, " "));
   return 'list.json';
 }
 
