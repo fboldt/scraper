@@ -30,7 +30,8 @@ async function crawl(home_link = DEFAULT_HOST, quant) {
     objectsList.push({url: DEFAULT_HOST, imgSLinks: imgs});
 
     let link;
-    for (let i = 0; i < links.length && i++ <quant; i++) {
+    if (quant == 0) { quant = links.length}
+    for (let i = 0; i < quant; i++) {
       link = links[i].url;
       try {
         if (await checkIfAllowed(link)) {
