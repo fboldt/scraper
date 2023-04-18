@@ -42,6 +42,7 @@ async function selecionaImagensPaginas(page, quantidade) {
         retorno.push(json_aux)
         cl+=1
         }
+        console.log(cl+'/'+quantidade);
 
     }
     return JSON.parse(JSON.stringify(retorno))
@@ -93,7 +94,8 @@ async function avaliaPagina(page) {
     return page.evaluate(() => {
         const lista = []
         //Percorre todas as imagens da página e as filtra pelo tamanho
-        for (a of document.querySelectorAll("a")) {
+        for (a of (Array.from(document.querySelectorAll(".image"))).map(n => n.href)) {
+            lista.push(a)
             // if (img.height > 70 && img.width > 70) {
             //     lista.push(img.src)
             // }
