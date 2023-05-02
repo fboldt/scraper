@@ -17,6 +17,8 @@ export async function geraJson(url, quantidade) {
 
 async function selecionaImagensPaginas(page, quantidade) {
     const retorno = []
+    const listaImgs = []
+    const imagens = []
     var json_aux = {}
     json_aux["Racas Sem Links"]= await nomeSemLink(page)
     retorno.push(json_aux)
@@ -37,9 +39,13 @@ async function selecionaImagensPaginas(page, quantidade) {
         page.waitForNavigation()
         if(await verificaPag(page)){
         const imagens = await getLinksImgs(page)
-        const qualImgs = await qualidadeImgs(page, imagens)
-        // console.log(nomes[m])
-        json_aux[nomes[m]] = qualImgs;
+        console.log(imagens)
+        for(let img of imagens){
+            page.goto(img)
+            await delay(4000)
+            listaImgs.push(qualidadeImgs(page))
+        }
+        json_aux[nomes[m]] = listaImgs;
         retorno.push(json_aux)
         cl+=1
         }
@@ -91,39 +97,25 @@ function delay(time) {
     });
  }
 
-async function getLinksImgs(page) {
-    
-    return links = await page.evaluate(() => {
-        const lista = []
-        //Percorre todas as imagens da página e as filtra pelo tamanho
-        for (a of (Array.from(document.querySelectorAll(".image"))).map(n => n.href)) {
-            lista.push(a)
-            // if (img.height > 70 && img.width > 70) {
-            //     lista.push(img.src)
-            // }
-            
-        }
-        return lista
+ async function getLinksImgs(page) {
+    return page.evaluate(() => {
+        return Array.from(document.querySelectorAll(".image")).map(n => n.href)
     })
-
-    
 }
 
-async function qualidadeImgs(page, imagens){
-    for(link of imagens){
-        page.goto(link)
-        const imagens= page.evaluate(()=>{
-            for (a of (Array.from(document.querySelectorAll(".mw-filepage-other-resolutions a"))).map(n => n.href)) {
-                lista.push(a)
-            }
+async function getResolutions(page) {
+    return page.evaluate(() => {
+        return Array.from(document.querySelectorAll(".mw-thumbnail-link")).map(n => n.href)
+    })
+}
 
-            return lista
-        })
-
+async function qualidadeImgs(page){
+        const links = getResolutions(page)
         let maiorAltura = 0
         let maiorImg = ""
-        for(linkimg of imagens){
-            page.goto(linkimg)
+        if(links.lenght>0){
+        for(const link of links){
+            page.goto(link)
             let altura = page.evaluate((maiorAltura)=>{
                 const img = document.querySelector('img')
                 if(img.height > maiorAltura){
@@ -132,15 +124,13 @@ async function qualidadeImgs(page, imagens){
                 return maiorAltura
             })
             if(altura>maiorAltura){
-                maiorImg = linkimg
+                maiorImg = link
             }
-        }
 
-        retorno.push(maiorImg)
-        
+        }
     }
 
-    return retorno
+    return maiorImg
     
-}
+ }
 
