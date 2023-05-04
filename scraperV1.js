@@ -16,10 +16,12 @@ export async function geraJson(url, quantidade) {
 };
 
 async function selecionaImagensPaginas(page, quantidade) {
-    const retorno = []
-    const listaImgs = []
-    const imagens = []
+    var retorno = []
+    var listaImgs = []
+    var imagens = []
+    var img_reso = []
     var json_aux = {}
+    let maiorAltura = 0
     json_aux["Racas Sem Links"]= await nomeSemLink(page)
     retorno.push(json_aux)
 
@@ -38,13 +40,22 @@ async function selecionaImagensPaginas(page, quantidade) {
         await page.goto(links[m])
         page.waitForNavigation()
         if(await verificaPag(page)){
-        const imagens = await getLinksImgs(page)
-        console.log(imagens)
+        imagens = await getLinksImgs(page)
         for(let img of imagens){
-            page.goto(img)
-            await delay(4000)
-            listaImgs.push(qualidadeImgs(page))
+            await page.goto(img)
+            img_reso = await getResolutions(page)
+            
+            for(let link of img_reso){
+                await page.goto(link)
+                let altura = await tamImg(page)
+                console.log(altura)
+                if(altura > maiorAltura){
+                maiorAltura = altura
+                listaImgs.push(link)
+                }
+                } 
         }
+        console.log(img_reso)
         json_aux[nomes[m]] = listaImgs;
         retorno.push(json_aux)
         cl+=1
@@ -54,6 +65,7 @@ async function selecionaImagensPaginas(page, quantidade) {
     }
     return JSON.parse(JSON.stringify(retorno))
 }
+
 
 async function listaLinks(page) {
     return page.evaluate(() => {
@@ -109,28 +121,9 @@ async function getResolutions(page) {
     })
 }
 
-async function qualidadeImgs(page){
-        const links = getResolutions(page)
-        let maiorAltura = 0
-        let maiorImg = ""
-        if(links.lenght>0){
-        for(const link of links){
-            page.goto(link)
-            let altura = page.evaluate((maiorAltura)=>{
-                const img = document.querySelector('img')
-                if(img.height > maiorAltura){
-                    maiorAltura = img.height
-                }
-                return maiorAltura
-            })
-            if(altura>maiorAltura){
-                maiorImg = link
-            }
-
-        }
-    }
-
-    return maiorImg
-    
- }
+async function tamImg(page){
+    return page.evaluate(() => {
+        return (document.querySelector('img')).height
+    })
+}
 
