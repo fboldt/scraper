@@ -22,6 +22,7 @@ async function selecionaImagensPaginas(page, quantidade) {
     var img_reso = []
     var json_aux = {}
     let maiorAltura = 0
+    let maiorLink = ''
     json_aux["Racas Sem Links"]= await nomeSemLink(page)
     retorno.push(json_aux)
 
@@ -51,9 +52,10 @@ async function selecionaImagensPaginas(page, quantidade) {
                 console.log(altura)
                 if(altura > maiorAltura){
                 maiorAltura = altura
-                listaImgs.push(link)
+                maiorLink = link
                 }
-                } 
+            } 
+                listaImgs.push(maiorLink)
         }
         console.log(img_reso)
         json_aux[nomes[m]] = listaImgs;
@@ -111,7 +113,14 @@ function delay(time) {
 
  async function getLinksImgs(page) {
     return page.evaluate(() => {
-        return Array.from(document.querySelectorAll(".image")).map(n => n.href)
+        const lista = [];
+        //Percorre todas as imagens da página e as filtra pelo tamanho
+        for (link of (document.querySelectorAll(".image")).map(n => n.href)) {
+            // if (link.height > 70 && img.width > 70) {
+            lista.push(img.src);
+            // }
+        }
+        return lista
     })
 }
 
