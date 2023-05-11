@@ -113,7 +113,7 @@ function delay(time) {
 
  async function getLinksImgs(page) {
     return page.evaluate(() => {
-        const lista = [];
+        const lista = []
         //Percorre todas as imagens da página e as filtra pelo tamanho
         for (link of (document.querySelectorAll(".image")).map(n => n.href)) {
             // if (link.height > 70 && img.width > 70) {

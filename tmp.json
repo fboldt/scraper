@@ -4,7 +4,7 @@
 	  "figlinks": [ 
 	  		{
 			  	"figurl": "fig1.jpg",
-			  	"figalt": "logotipo",
+			  	"figalt": "logotipo"
 	  		}, 
 	  		{
 		  		"figurl": "fig2.jpg"
@@ -22,7 +22,7 @@
 	  		}, 
 	  		{
 	  			"figurl": "fig4.jpg" 
-	  		},
+	  		}
 		  	      ] 
 	},
 	{ 
