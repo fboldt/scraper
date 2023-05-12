@@ -12,7 +12,7 @@ const dogsList = await createDogsList(page, dogsUrl)
 console.log(dogsList)
 const randomList = await createRamdomList(page, mainUrl, dogsList, quantity)
 
-await fs.writeFile("randomUrls.json", JSON.stringify(randomList))
+await fs.writeFile("randomUrls.json", JSON.stringify(randomList, null, " "))
 
 browser.close()
 
@@ -28,44 +28,44 @@ async function createDogsList(page, dogsUrl) {
 async function createRamdomList(page, mainUrl, dogsList, quantity) {
     console.log('Scraping ramdom List...')
     const randomList = {}
-    
-    do{
+
+    do {
         await page.goto(mainUrl)
         const linkRandom = await getLinkPage(page)
-        if(await verifyPage(dogsList, linkRandom) === false){
+        if (await verifyPage(dogsList, linkRandom) === false) {
             continue
         }
-        randomList[linkRandom]= await getText(page)
+        const text = await getText(page)
+        if (text.length > 250) randomList[linkRandom] = text
         console.log(Object.keys(randomList).length)
-
     }
-    while((Object.keys(randomList).length)<quantity)
+    while ((Object.keys(randomList).length) < quantity)
     console.log(randomList)
     return randomList
 }
 
-async function getLinkPage(page){
+async function getLinkPage(page) {
     return page.evaluate(() => {
         return (document.querySelector('.mw-jump-link').href).replace('#bodyContent', '')
     })
 }
 
-async function verifyPage(dogsList, linkRandom){
-    for(const link of dogsList){
-        if(linkRandom === link){
+async function verifyPage(dogsList, linkRandom) {
+    for (const link of dogsList) {
+        if (linkRandom === link) {
             return false
         }
     }
     return true
 }
 
-async function getText(page){
+async function getText(page) {
     return page.evaluate(() => {
         let firstp = ""
-        if(document.querySelector('.mw-empty-elt') !== null){
+        if (document.querySelector('.mw-empty-elt') !== null) {
             firstp = document.querySelectorAll('p')[1]
         }
-        else{
+        else {
             firstp = document.querySelectorAll('p')[0]
         }
 
