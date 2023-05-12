@@ -4,13 +4,13 @@ import fs from "fs/promises"
 
 export async function geraJson(url, quantidade) {
     console.log('scraping')
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch({headless:false});
     const page = await browser.newPage()
     await page.goto(url)
     const retorno = await selecionaImagensPaginas(page, quantidade)
     await delay(4000)
     browser.close()
-    await fs.writeFile("public/lista.json", JSON.stringify(retorno))
+    await fs.writeFile("public/lista.json", JSON.stringify(retorno, null, " "))
     const link = "<a href='lista.json'>download</a>"
     return link
 };
@@ -37,12 +37,15 @@ async function selecionaImagensPaginas(page, quantidade) {
     console.log(cl+'/'+quantidade);
     //acessa todos os links e seleciona as imagens de cada página
     for (let m = 0; m < quantidade; m++) {
+        listaImgs = []
         const json_aux = {}
         await page.goto(links[m])
         page.waitForNavigation()
         if(await verificaPag(page)){
         imagens = await getLinksImgs(page)
         for(let img of imagens){
+            maiorAltura = 0
+            maiorLink = ""
             await page.goto(img)
             img_reso = await getResolutions(page)
             
@@ -55,9 +58,9 @@ async function selecionaImagensPaginas(page, quantidade) {
                 maiorLink = link
                 }
             } 
-                listaImgs.push(maiorLink)
+            
+            if(maiorLink !== "") listaImgs.push(maiorLink)
         }
-        console.log(img_reso)
         json_aux[nomes[m]] = listaImgs;
         retorno.push(json_aux)
         cl+=1
@@ -115,10 +118,10 @@ function delay(time) {
     return page.evaluate(() => {
         const lista = []
         //Percorre todas as imagens da página e as filtra pelo tamanho
-        for (link of (document.querySelectorAll(".image")).map(n => n.href)) {
-            // if (link.height > 70 && img.width > 70) {
-            lista.push(img.src);
-            // }
+        for (link of (document.querySelectorAll(".image"))) {
+            if (link.querySelector('img').width > 70 && link.querySelector('img').height > 70) {
+                lista.push(link.href)
+            }
         }
         return lista
     })
@@ -126,7 +129,13 @@ function delay(time) {
 
 async function getResolutions(page) {
     return page.evaluate(() => {
-        return Array.from(document.querySelectorAll(".mw-thumbnail-link")).map(n => n.href)
+        let list = Array.from(document.querySelectorAll(".mw-thumbnail-link")).map(n => n.href)
+        if(list.length === 0){
+            return [document.querySelector(".internal").href]
+        }
+        else{
+            return list
+        }
     })
 }
 
