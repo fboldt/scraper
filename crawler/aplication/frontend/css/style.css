@@ -1,0 +1,67 @@
+.link-input {
+    width: 100%; /* Define a largura como 100% */
+    margin-bottom: 15px;
+}
+
+.results-table {
+    width: 100%; /* Defina a altura desejada */
+}
+
+.save-results-button {
+    display: block;
+    margin: 0 auto;
+    margin-top: auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.button-container button {
+    margin-right: 10px;
+}
+
+.loading-text {
+    display: flex;
+    justify-content: center;
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px; /* ajuste conforme necessário */
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    margin-right: 5px;
+}
+
+.pagination li a {
+    display: block;
+    padding: 5px 10px;
+    background-color: #f2f2f2;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.pagination li a:hover {
+    background-color: #ddd;
+}
+  
+
+  
+  
+  
+
+
+

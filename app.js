@@ -1,4 +1,4 @@
-import express, {urlencoded } from "express";
+import express, { urlencoded } from "express";
 import { crawl } from "./crawler.js";
 
 const app = express();
