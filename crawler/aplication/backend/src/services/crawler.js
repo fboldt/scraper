@@ -27,6 +27,11 @@ async function crawl(url = DEFAULT_HOST, amount=10) {
 
     objectsList.push({url: DEFAULT_HOST, imgSLinks: imgs});
 
+    /**
+     * Precisa ser feito uma verificação para saber se uma quantidade foi passada como parâmetro.
+     */
+    amount = links.length
+    
     for (let i = 0; i < amount; i++) {
       let link = links[i].url;
       try {
