@@ -1,8 +1,8 @@
 
-var puppeter = require('puppeteer')
-var fs = require("fs/promises")
+import puppeteer from 'puppeteer';
+import fs from "fs/promises";
 
-async function geraJson(url, quantidade) {
+export async function geraJson(url, quantidade) {
     console.log('scraping')
     const browser = await puppeteer.launch({headless:false});
     const page = await browser.newPage()
@@ -27,42 +27,44 @@ async function selecionaImagensPaginas(page, quantidade) {
 
     const links = await listaLinks(page)
     const nomes = await listaNomes(page)
-    let cl = 0
 
     if (quantidade==0){
         quantidade=links.length
     }
 
-    console.log(cl+'/'+quantidade);
+    console.log('0/'+quantidade);
     //acessa todos os links e seleciona as imagens de cada página
     for (let m = 0; m < quantidade; m++) {
         listaImgs = []
         await page.goto(links[m])
         page.waitForNavigation()
         if(await verificaPag(page)){
-        imagens = await getLinksImgs(page)
-        for(let img of imagens){
-            maiorAltura = 0
-            maiorLink = ""
-            await page.goto(img)
-            img_reso = await getResolutions(page)
-            
-            for(let link of img_reso){
-                await page.goto(link)
-                let altura = await tamImg(page)
-                console.log(altura)
-                if(altura > maiorAltura){
-                maiorAltura = altura
-                maiorLink = link
+            imagens = await getLinksImgs(page)
+            for(let img of imagens){
+                console.log("dentro")
+                maiorAltura = 0
+                maiorLink = ""
+                await page.goto(img)
+                img_reso = await getResolutions(page)
+                
+                for(let link of img_reso){
+                    await page.goto(link)
+                    let altura = await tamImg(page)
+                    console.log(altura)
+                    if(altura > maiorAltura){
+                    maiorAltura = altura
+                    maiorLink = link
+                    }
+                } 
+                
+                if(maiorLink !== "") {
+                    listaImgs.push(maiorLink)
                 }
-            } 
-            
-            if(maiorLink !== "") listaImgs.push(maiorLink)
+                
+            }
+            json_aux[nomes[m]] = listaImgs;
         }
-        json_aux[nomes[m]] = listaImgs;
-        cl+=1
-        }
-        console.log(cl+'/'+quantidade);
+        console.log(m+'/'+quantidade);
 
     }
     retorno["Racas com Link"]=json_aux
@@ -116,7 +118,7 @@ function delay(time) {
     return page.evaluate(() => {
         const lista = []
         //Percorre todas as imagens da página e as filtra pelo tamanho
-        for (link of (document.querySelectorAll(".image"))) {
+        for (link of (document.querySelectorAll(".mw-file-description"))) {
             if (link.querySelector('img').width > 70 && link.querySelector('img').height > 70) {
                 lista.push(link.href)
             }
@@ -142,5 +144,3 @@ async function tamImg(page){
         return (document.querySelector('img')).height
     })
 }
-
-module.exports={geraJson};
