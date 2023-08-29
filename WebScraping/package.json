@@ -1,0 +1,33 @@
+{
+  "name": "scraper",
+  "version": "1.0.0",
+  "description": "Scrap dog images from wikipedia.",
+  "engines": {
+    "node": "18.x"
+  },
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fboldt/scraper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fboldt/scraper/issues"
+  },
+  "homepage": "https://github.com/fboldt/scraper#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "puppeteer": "^19.2.1",
+    "robots-txt-parser": "^2.0.3",
+    "tqdm": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
