@@ -1,0 +1,48 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&display=swap" rel="stylesheet">
+
+    <title>Wiki Scraper</title>
+
+    <style>
+        body {
+            text-align: center;
+        }
+        input {
+            margin-bottom: 20px;
+        }
+        h1{
+            font-family: 'Montserrat', sans-serif;
+        }
+        div{
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>
+            Images Scraper
+        </h1>
+        <form action="" method="POST">
+            <!-- Trocar para a url do heroku quando estiver pronto-->
+            Link: <input type="text" name="url" value="https://en.wikipedia.org/wiki/List_of_dog_breeds" size="40">
+            <input type="submit" value="Enviar"><br>
+            Quantidade:
+            <input type="range" min="0" max="200" value="2" oninput="rangeValue.innerText = this.value" name="quantidade">
+            <span id="rangeValue">2</span>
+        </form>
+    </div>
+</body>
