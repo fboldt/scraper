@@ -1,10 +1,15 @@
+//
+//  WEB SCRAPER  - 2023
+//
+// ------------------------------------
 
 import puppeteer from 'puppeteer';
 import fs from "fs/promises";
 
+//--------------------------------------
 export async function geraJson(url, quantidade) {
-    console.log('scraping')
-    const browser = await puppeteer.launch({headless:false});
+    console.log('scraping...')
+    const browser = await puppeteer.launch();
     const page = await browser.newPage()
     await page.goto(url)
     const retorno = await selecionaImagensPaginas(page, quantidade)
@@ -32,40 +37,39 @@ async function selecionaImagensPaginas(page, quantidade) {
         quantidade=links.length
     }
 
-    console.log('0/'+quantidade);
-    //acessa todos os links e seleciona as imagens de cada página
+    // Acessa todos os links e seleciona as imagens de cada página
     for (let m = 0; m < quantidade; m++) {
+        console.log(m+'/'+quantidade);
         listaImgs = []
         await page.goto(links[m])
         page.waitForNavigation()
         if(await verificaPag(page)){
             imagens = await getLinksImgs(page)
             for(let img of imagens){
-                console.log("dentro")
                 maiorAltura = 0
                 maiorLink = ""
-                await page.goto(img)
-                img_reso = await getResolutions(page)
-                
-                for(let link of img_reso){
-                    await page.goto(link)
-                    let altura = await tamImg(page)
-                    console.log(altura)
-                    if(altura > maiorAltura){
-                    maiorAltura = altura
-                    maiorLink = link
+                try{
+                    await page.goto(img)
+                    img_reso = await getResolutions(page)
+                    
+                    for(let link of img_reso){
+                        await page.goto(link)
+                        let altura = await tamImg(page)
+                        if(altura > maiorAltura){
+                        maiorAltura = altura
+                        maiorLink = link
+                        }
+                    } 
+                    if(maiorLink !== "") {
+                        listaImgs.push(maiorLink)
                     }
-                } 
-                
-                if(maiorLink !== "") {
-                    listaImgs.push(maiorLink)
-                }
-                
+                }catch(e){
+                    console.log(e)
+                    continue
+                }  
             }
             json_aux[nomes[m]] = listaImgs;
         }
-        console.log(m+'/'+quantidade);
-
     }
     retorno["Racas com Link"]=json_aux
     return JSON.parse(JSON.stringify(retorno))

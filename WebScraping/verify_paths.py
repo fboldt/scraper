@@ -1,5 +1,5 @@
 #
-# Versão 2.1
+# Versão 1.1
 # IFES SERRA 2023
 # 
 # - Remove pastas vazias
