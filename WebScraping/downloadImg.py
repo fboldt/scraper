@@ -1,4 +1,10 @@
-
+#
+# Versão 2.1
+# IFES SERRA 2023
+# 
+# - Download das imagens geradas pelo Scraper.
+#
+################################################
 
 import json
 import requests
@@ -9,15 +15,14 @@ import sys
 sys.stdin.reconfigure(encoding='utf-8')
 sys.stdout.reconfigure(encoding='utf-8')
 
-########################################
+#################################################
 
 def baixarImgs(dados):
     lstError = {}
     totalImgs = 0
     for id, raca in zip(dados.keys(), dados.values()):
+        
         lst = []
-
-
         dir = './racas/'+ id
         
         if not(os.path.isdir(dir)):
@@ -49,12 +54,14 @@ def baixarImgs(dados):
         totalImgs+=len(raca)
     
     print(totalImgs)
+    
     return lstError
-
 
 def main():
     
-    with open('lista.json', encoding='utf-8') as meu_json:
+    nome_arq = 'lista.json'
+    
+    with open(nome_arq, encoding='utf-8') as meu_json:
         arq = json.load(meu_json)
 
     if not(os.path.isdir('racas')):
