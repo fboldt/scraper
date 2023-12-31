@@ -17,55 +17,101 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 #################################################
 
+import os
+import urllib.request
+
 def baixarImgs(dados):
     lstError = {}
     totalImgs = 0
     for id, raca in zip(dados.keys(), dados.values()):
-        
         lst = []
-        dir = './racas/'+ id
-        
-        if not(os.path.isdir(dir)):
+        dir = './new_racas/' + id
+
+        if not os.path.isdir(dir):
             os.mkdir(dir)
-        if (len(os.listdir(dir)) == 0):
+        
+        if len(os.listdir(dir)) == 0:
             for link in raca:
-                nomeArq = dir+"/" + link.split("/").pop()
-                r = requests.get(link, stream=True)
-                try:
-                    with open(nomeArq, 'wb') as f:
-                        f.write(r.content)
-                except:
-                    lst.append(nomeArq)
-        else: 
-            for link in raca:
-                nomeArq = dir+"/" + link.split("/").pop()
-                if not(os.path.isfile(nomeArq)):
-                    r = requests.get(link, stream=True)
+                nomeArq = os.path.join(dir, link.split("/").pop())
+                if not os.path.isfile(nomeArq):
                     try:
-                        with open(nomeArq, 'wb') as f:
-                            f.write(r.content)
+                        with urllib.request.urlopen(link) as response:
+                            with open(nomeArq, 'wb') as f:
+                                f.write(response.read())
                     except:
                         lst.append(nomeArq)
-        
-        if (len(lst)!=0):
-            lstError[id] = lst             
-                    
+        else:
+            for link in raca:
+                nomeArq = os.path.join(dir, link.split("/").pop())
+                if not os.path.isfile(nomeArq):
+                    try:
+                        with urllib.request.urlopen(link) as response:
+                            with open(nomeArq, 'wb') as f:
+                                f.write(response.read())
+                    except:
+                        lst.append(nomeArq)
+
+        if len(lst) != 0:
+            lstError[id] = lst
+
         print(f"Raca: {id} \nImagens: {raca}\nTotal de Imagens: {len(raca)}\nImgs n baixadas: {lst}\n")
-        totalImgs+=len(raca)
-    
+        totalImgs += len(raca)
+
     print(totalImgs)
-    
+
     return lstError
+
+# def baixarImgs(dados):
+#     lstError = {}
+#     totalImgs = 0
+
+
+#     for id, raca in zip(dados.keys(), dados.values()):
+        
+#         lst = []
+#         dir = './racas/'+ id
+        
+#         if not(os.path.isdir(dir)):
+#             os.mkdir(dir)
+#         if (len(os.listdir(dir)) == 0):
+#             for link in raca:
+#                 nomeArq = dir+"/" + link.split("/").pop()
+#                 r = requests.get(link, stream=True)
+#                 try:
+#                     with open(nomeArq, 'wb') as f:
+#                         f.write(r.content)
+#                 except:
+#                     lst.append(nomeArq)
+#         else: 
+#             for link in raca:
+#                 nomeArq = dir+"/" + link.split("/").pop()
+#                 if not(os.path.isfile(nomeArq)):
+#                     r = requests.get(link, stream=True)
+#                     try:
+#                         with open(nomeArq, 'wb') as f:
+#                             f.write(r.content)
+#                     except:
+#                         lst.append(nomeArq)
+        
+#         if (len(lst)!=0):
+#             lstError[id] = lst             
+                    
+#         print(f"Raca: {id} \nImagens: {raca}\nTotal de Imagens: {len(raca)}\nImgs n baixadas: {lst}\n")
+#         totalImgs+=len(raca)
+    
+#     print(totalImgs)
+    
+#     return lstError
 
 def main():
     
-    nome_arq = 'lista.json'
+    nome_arq = 'public/lista.json'
     
     with open(nome_arq, encoding='utf-8') as meu_json:
         arq = json.load(meu_json)
 
-    if not(os.path.isdir('racas')):
-        os.mkdir('./racas')
+    if not(os.path.isdir('new_racas')):
+        os.mkdir('./new_racas')
 
     racasSemLink = arq["Racas Sem Link"]
     imgsNBaixadas = baixarImgs(arq["Racas com Link"])
@@ -74,7 +120,6 @@ def main():
     print(f'Total de racas: {len(arq["Racas Sem Link"]) + len(arq["Racas com Link"])}')
     print(f'Não baixadas: {imgsNBaixadas}')
     meu_json.close()
-
 
 if __name__ == '__main__':
     main()

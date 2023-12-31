@@ -1,4 +1,4 @@
-import express, {urlencoded } from "express";
+import express, { urlencoded } from "express";
 import { geraJson } from "./scraper.js";
 
 const app = express();
@@ -11,11 +11,9 @@ app.post("/", async (req, res) => {
     const url = req.body.url
     res.end(await geraJson(url, quant))
     console.timeEnd('scraping')
-
 });
 
 const port = process.env.PORT || 3000
-
 
 const start = async () => {
     try {
@@ -26,6 +24,5 @@ const start = async () => {
         console.log(error);
     }
 };
-
 
 start()
